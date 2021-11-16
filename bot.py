@@ -22,6 +22,13 @@ privilaged_users = [322015089529978880]
 async def is_owner(ctx):
     return ctx.author.id in privilaged_users
 
+async def filter(msg):
+    passed = True
+    # Filters messages
+
+    return passed
+
+
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=game)
@@ -35,6 +42,14 @@ async def on_member_join(joined_member):
         await joined_member.edit(roles=[knuckle])
         print("ADDED ROLE TO ", joined_member)
 
+
+@client.event
+async def on_message(message):
+    if message.author.bot:
+        pass
+    
+    if filter(message.content):
+        pass
 
 # @client.check
 # async def globally_block_dms(ctx):
