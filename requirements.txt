@@ -1,0 +1,4 @@
+alt_profanity_check==1.0.1
+discord.py==1.7.3
+profanity_check==1.0.3
+python-dotenv==0.19.2
