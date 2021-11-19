@@ -6,8 +6,8 @@ from discord.ext.commands import has_permissions, MissingPermissions
 import typing
 import time
 from dotenv import load_dotenv
-# from profanity_check import predict, predict_prob
-
+from profanity_check import predict, predict_prob
+from datetime import datetime
 
 load_dotenv('.env')
 
@@ -23,33 +23,92 @@ privilaged_users = [322015089529978880]
 
 uganda = 525442477365133323
 
+# A dict of users to prevent spam
+time_window_milliseconds = 1000
+max_msg_per_window = 3
+author_msg_times = {}
 
 async def is_owner(ctx):
     return ctx.author.id in privilaged_users
 
 async def passedFilter(msg):
     passed = True
+
+    # Use AI to detect profanity level. if over a % return False.
+    prob = predict_prob([msg])[0]
+    if prob > .80:
+        return False
+
     msg = msg.split()
+    for c in msg:
+        if c == "neger" or c == "negrar" or c == "n3g3r" or c == "n3ger" or c == "neg3r":
+            return False
+
+    return passed
+
+    # msg = msg.split()
     # Filters messages
     # with open("wordlist.txt", 'r') as f:
     #     words = f.read()
     #     badwords = re.split('\"[a-zA-Z0-9]*\"', words)
     #     print(badwords)
-    # print(predict_prob([msg]))
-    print("filtering")
 
-    for c in msg:
-        if c == "neger" or c == 'nigger':
-            passed = False
-            break
+async def detect_spam(msg):
+    global author_msg_counts
 
-    return passed
+    author_id = msg.author.id
+    # Get current epoch time in milliseconds
+    curr_time = datetime.now().timestamp() * 1000
+
+    # Make empty list for author id, if it does not exist
+    if not author_msg_times.get(author_id, False):
+        author_msg_times[author_id] = []
+
+    # Append the time of this message to the users list of message times
+    author_msg_times[author_id].append(curr_time)
+
+    # Find the beginning of our time window.
+    expr_time = curr_time - time_window_milliseconds
+
+    # Find message times which occurred before the start of our window
+    expired_msgs = [
+        msg_time for msg_time in author_msg_times[author_id]
+        if msg_time < expr_time
+    ]
+
+    # Remove all the expired messages times from our list
+    for msg_time in expired_msgs:
+        author_msg_times[author_id].remove(msg_time)
+    # ^ note: we probably need to use a mutex here. Multiple threads
+    # might be trying to update this at the same time. Not sure though.
+
+    if len(author_msg_times[author_id]) > max_msg_per_window:
+        # await msg.delete()
+        await msg.author.send("Din lilla snorunge sluta spamma")
+        return True
+
+
+def messageDeletion(msg):
+
+    channel_link = f"https://discordapp.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}"
+    embed = discord.Embed(title="Message from user deleted",URL=channel_link, colour=discord.Colour.red())
+        
+    embed.add_field(name=f"User", value=f"{msg.author.name}#{msg.author.discriminator}", inline=False)
+    embed.add_field(name="Content", value=f"'{msg.content}'", inline=False)
+    embed.add_field(name="Where?", value=f"#{msg.channel.name} in {msg.guild.name}", inline=False)
+
+    embed.timestamp = datetime.utcnow()
+    embed.set_footer(text='\u200b', icon_url=msg.author.avatar_url)
+
+    return embed
 
 
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=game)
     print("Ready to serve!")
+    global owner
+    owner = await client.fetch_user(322015089529978880)
 
 
 @client.event
@@ -65,11 +124,18 @@ async def on_message(message):
         pass
     
     if not await passedFilter(message.content):
+        deletionEmbed = messageDeletion(message)
         await message.delete()
-        await message.author.kick()
+        # await message.author.kick()
+        # Add a feature to warn the user 
+        # await owner.send(f"User {message.author.name}#{message.author.discriminator} sent {message.content} in {message.channel.name}/{message.channel.id}")
+        await owner.send(embed = deletionEmbed)
+    else:
 
-    
-    await client.process_commands(message)
+        if await detect_spam(message):
+            await owner.send(f"{message.author.name} spamar")
+
+        await client.process_commands(message)
 
 # @client.check
 # async def globally_block_dms(ctx):
