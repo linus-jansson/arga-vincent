@@ -1,3 +1,4 @@
+#!/bin/bash
 FROM python:3.8-buster
 # FROM node:10
 
