@@ -23,35 +23,24 @@ privilaged_users = [322015089529978880]
 
 uganda = 525442477365133323
 
-# A dict of users to prevent spam
+
 time_window_milliseconds = 1000
 max_msg_per_window = 3
+# A dict of users to prevent spam
 author_msg_times = {}
 
 async def is_owner(ctx):
     return ctx.author.id in privilaged_users
 
-async def passedFilter(msg):
-    passed = True
+async def profanityLevel(msg):
 
-    # Use AI to detect profanity level. if over a % return False.
-    prob = predict_prob([msg])[0]
-    if prob > .80:
-        return False
-
-    msg = msg.split()
-    for c in msg:
+    msgsplit = msg.split()    
+    for c in msgsplit:
         if c == "neger" or c == "negrar" or c == "n3g3r" or c == "n3ger" or c == "neg3r":
-            return False
-
-    return passed
-
-    # msg = msg.split()
-    # Filters messages
-    # with open("wordlist.txt", 'r') as f:
-    #     words = f.read()
-    #     badwords = re.split('\"[a-zA-Z0-9]*\"', words)
-    #     print(badwords)
+            return 1.0
+    else:
+        # Use AI to detect profanity level. if over a % return False.
+        return predict_prob([msg])[0]
 
 async def detect_spam(msg):
     global author_msg_counts
@@ -88,7 +77,7 @@ async def detect_spam(msg):
         return True
 
 
-def messageDeletion(msg):
+def removeMessageEmbed(msg):
 
     channel_link = f"https://discordapp.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}"
     embed = discord.Embed(title="Message from user deleted",URL=channel_link, colour=discord.Colour.red())
@@ -123,12 +112,10 @@ async def on_message(message):
     if message.author.bot:
         pass
     
-    if not await passedFilter(message.content):
-        deletionEmbed = messageDeletion(message)
+    if await profanityLevel(message.content) > .8:
+        deletionEmbed = removeMessageEmbed(message)
         await message.delete()
         # await message.author.kick()
-        # Add a feature to warn the user 
-        # await owner.send(f"User {message.author.name}#{message.author.discriminator} sent {message.content} in {message.channel.name}/{message.channel.id}")
         await owner.send(embed = deletionEmbed)
     else:
 
@@ -137,6 +124,7 @@ async def on_message(message):
 
         await client.process_commands(message)
 
+# Block all dms
 # @client.check
 # async def globally_block_dms(ctx):
 #     return ctx.guild is not None
