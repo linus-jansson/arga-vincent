@@ -110,7 +110,7 @@ async def on_member_join(joined_member):
 @client.event
 async def on_message(message):
     if message.author.bot:
-        pass
+        return
     
     if await profanityLevel(message.content) > .8:
         deletionEmbed = removeMessageEmbed(message)
