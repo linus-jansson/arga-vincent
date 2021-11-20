@@ -8,8 +8,7 @@ WORKDIR /
 # Copying everything into workdir
 COPY . .
 
-RUN "python -m pip install -r requirements.txt"
-
+RUN python -m pip install -r requirements.txt
 
 # DEBUG
 RUN ls
