@@ -6,6 +6,9 @@ Main dc bot
     - `TOKEN=XXXXXXX`
 
 
+# Installing deps
+- `python3 -m pip install -r requirements.txt`
+
 # Addition ideas
 - [ ] @Everyone abuse counter
     - [ ] Top@everyone list
