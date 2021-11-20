@@ -17,6 +17,11 @@ Main dc bot
 - [ ] Mute functionallity
     - [ ] Text mute
     - [ ] Servermute
+- [ ] Profanity filter
+    - [ ] Warn user
+    - [ ] Kick or bań user if they made multiple warnings
+    - [x] Delete message
+    - [x] Contact BINUS
 - [ ] Ban
 - [ ] Kick
 - [ ] Shutdown
