@@ -30,6 +30,8 @@ max_msg_per_window = 3
 # A dict of users to prevent spam
 author_msg_times = {}
 
+logger = Logger(os.environ.get('DROPBOX_TOKEN', 0))
+
 async def is_owner(ctx):
     return ctx.author.id in privilaged_users
 
@@ -130,6 +132,11 @@ async def on_message(message):
 # async def globally_block_dms(ctx):
 #     return ctx.guild is not None
 
+
+@client.command()
+async def help(ctx):
+    await ctx.send("Lol")
+
 # Quick ping pong test
 @client.command()
 async def ping(ctx):    
@@ -176,8 +183,15 @@ async def testCount(ctx, amount: int):
         await ctx.send(str(n))
         time.sleep(1)
 
-        
-token = os.environ.get('TOKEN', 0)
+# @client.command()
+# async def remember(ctx, content):
+#     logger.title = "test_log"
+#     logger.log(content)
+#     await ctx.send(f"I'll remember: {content}")
 
-if token != 0:
-    client.run(token)
+
+        
+DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN', 0)
+
+if DISCORD_TOKEN != 0:
+    client.run(DISCORD_TOKEN)
