@@ -4,7 +4,7 @@ Main dc bot
 # Requirements 
 - .env file
 ```
-TOKEN=XXXXXXX
+DISCORD_TOKEN=XXXXXXX
 DROPBOX_TOKEN=
 ```
 
