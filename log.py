@@ -5,8 +5,8 @@ from time import localtime, strftime
 import datetime
 
 class Logger():
-    def __init__(self, dropbox_key, title):
-        self.title = title
+    def __init__(self, dropbox_key):
+        self.title = 'log'
         self.dbx = dropbox.Dropbox(dropbox_key)
         
         # Backup logger
@@ -21,11 +21,11 @@ class Logger():
 
     def upload(self, data):
         file_name = f"{self.title}-{self.getDate()}.log"
-        path = 'logs/' + file_name
-    
+        path = "/" + file_name
+        bdata = bytes(data, "UTF-8")
         try:
             self.dbx.files_upload(
-                data, path,
+                bdata, path,
                 client_modified=datetime.datetime(*localtime()[:6]), # Jag vet inte vad *localtime()[:6] gör men hoppas det fungerar
                 mute=False)
         except dropbox.exceptions.ApiError as err:
@@ -38,4 +38,3 @@ class Logger():
         self.upload(content)
 
     
-Logger("abc", "log").log("test",)
