@@ -3,7 +3,10 @@ Main dc bot
 
 # Requirements 
 - .env file
-    - `TOKEN=XXXXXXX`
+```
+TOKEN=XXXXXXX
+DROPBOX_TOKEN=
+```
 
 
 # Installing deps
