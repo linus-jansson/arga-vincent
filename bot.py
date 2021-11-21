@@ -8,6 +8,7 @@ import time
 from dotenv import load_dotenv
 from profanity_check import predict, predict_prob
 from datetime import datetime
+from log import Logger
 
 load_dotenv('.env')
 
