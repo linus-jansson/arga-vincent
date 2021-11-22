@@ -114,11 +114,14 @@ async def on_member_join(joined_member):
 async def on_message(message):
     if message.author.bot:
         return
+    pfLevel = await profanityLevel(message.content)
     
-    if await profanityLevel(message.content) > .8:
+    if pfLevel >= 1.0:
+        await message.author.kick()
+        
+    if pfLevel > .8:
         deletionEmbed = removeMessageEmbed(message)
         await message.delete()
-        # await message.author.kick()
         await owner.send(embed = deletionEmbed)
     else:
 
