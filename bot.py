@@ -118,7 +118,7 @@ async def on_message(message):
     
     if pfLevel >= 1.0:
         await message.author.kick()
-        
+
     if pfLevel > .8:
         deletionEmbed = removeMessageEmbed(message)
         await message.delete()
@@ -135,7 +135,8 @@ async def on_message(message):
 # async def globally_block_dms(ctx):
 #     return ctx.guild is not None
 
-
+# Remove already existing command
+client.remove_command("help")
 @client.command()
 async def help(ctx):
     await ctx.send("Lol")
