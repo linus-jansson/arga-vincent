@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from profanity_check import predict, predict_prob
 from datetime import datetime
 from log import Logger
+from downloader import ytDownload
 
 load_dotenv('.env')
 
@@ -35,11 +36,11 @@ logger = Logger(os.environ.get('DROPBOX_TOKEN', 0))
 async def is_owner(ctx):
     return ctx.author.id in privilaged_users
 
+from wordlist import bannedWords
 async def profanityLevel(msg):
-
     msgsplit = msg.split()    
     for c in msgsplit:
-        if c == "neger" or c == "negrar" or c == "n3g3r" or c == "n3ger" or c == "neg3r":
+        if c in bannedWords:
             return 1.0
     else:
         # Use AI to detect profanity level. if over a % return False.
@@ -180,6 +181,18 @@ async def purge(ctx, amount: int, members: commands.Greedy[discord.Member] = Non
 
     await ctx.channel.delete_messages(messages)    
 
+@client.command()
+async def youtube(ctx, url: str, fileType: str):
+    await ctx.message.delete()
+    
+    try:
+        path = await ytDownload(url, fileType)
+        await ctx.send(f"Here you go {ctx.author.mention}!", file=discord.File(path))
+    except Exception as err:
+        # await ctx.send(err)
+        await ctx.send("Cannot do this atm.. Maybe the video to large or long D: Maybe brok :(")
+
+
 
 @client.command()
 async def testCount(ctx, amount: int):
@@ -193,7 +206,14 @@ async def testCount(ctx, amount: int):
 #     logger.log(content)
 #     await ctx.send(f"I'll remember: {content}")
 
-
+@client.event 
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    elif isinstance(error, commands.MissingPermissions):
+        ctx.author.send("You dont have permission(s) to run this command")
+    else:
+        raise error
         
 DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN', 0)
 
