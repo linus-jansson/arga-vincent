@@ -9,5 +9,8 @@ bannedWords = [
     "taiwan",
     "allah",
     "destiny",
-    "tinamen"
+    "tinamen",
+    "Argavincent",
+    "@argavincent",
+    "argvincent"
 ]
