@@ -37,3 +37,4 @@ DROPBOX_TOKEN=
     - [ ] Give role on join
     - [ ] Role to sharky.. hehe?
 - [ ] ~~Stock market checker~~
+- [ ] Youtube Downloader using pytube
