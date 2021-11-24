@@ -188,10 +188,16 @@ async def youtube(ctx, url: str, fileType: str):
     
     try:
         path = await ytDownload(url, fileType)
+        if path == None:
+            await ctx.send("Video is either larger than 8Mb or longer than 10 minutes D:")
+            return
+            
         await ctx.send(f"Here you go {ctx.author.mention}!", file=discord.File(path))
     except Exception as err:
         # await ctx.send(err)
-        await ctx.send("Cannot do this atm.. Maybe the video to large or long D: Maybe brok :(")
+        logger.title = "youtube_download_exception"
+        logger.log(err)
+        await ctx.send("brok :(")
 
 @client.command()
 async def shutdown(ctx, toggle: typing.Optional[int]):
