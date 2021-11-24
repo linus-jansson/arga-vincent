@@ -180,19 +180,11 @@ async def purge(ctx, amount: int, members: commands.Greedy[discord.Member] = Non
 
     await ctx.channel.delete_messages(messages)    
 
-
-@client.command()
-async def testCount(ctx, amount: int):
-    for n in range(1, amount - 1):
-        await ctx.send(str(n))
-        time.sleep(1)
-
 # @client.command()
 # async def remember(ctx, content):
 #     logger.title = "test_log"
 #     logger.log(content)
 #     await ctx.send(f"I'll remember: {content}")
-
 
         
 DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN', 0)
