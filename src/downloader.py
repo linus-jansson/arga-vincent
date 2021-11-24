@@ -37,6 +37,11 @@ async def ytDownload(url: str, fileType: str = "mp4"):
         outfile = video.streams.filter(progressive=True, file_extension="mp4").order_by('resolution').desc().first().download(path)
         os.rename(outfile, endPath)
 
+    # IF file is larger than 8mb, remove it. Discord can't send it.
+    if (os.path.getsize(endPath) / 1048576) >= 8.0:
+        os.remove(endPath)
+        raise None
+
     return endPath
 
 
