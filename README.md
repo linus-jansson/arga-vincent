@@ -40,3 +40,5 @@ DROPBOX_TOKEN=
 - [ ] ~~Stock market checker~~
 - [ ] Youtube Downloader using pytube
     - [ ] Check if the file is larger than 8MB
+    - [ ] Thread pooling to prevent discord from becoming mad because the video download takes a long time.
+        - [ ] Queue system that downloader.py downloads from. Sends it when its downloaded and tags the requester.
