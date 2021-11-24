@@ -2,3 +2,4 @@ alt_profanity_check>=1.0.1
 discord.py>=1.7.3
 python-dotenv>=0.19.2
 dropbox>=11.24.0
+pytube>=11.0.1

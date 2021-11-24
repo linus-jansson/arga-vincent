@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from profanity_check import predict, predict_prob
 from datetime import datetime
 from log import Logger
+from downloader import ytDownload
+import base64
 
 load_dotenv('.env')
 
@@ -19,8 +21,7 @@ client = commands.Bot(command_prefix='v.',intents=i)
 
 game = discord.Game("NULL")
 
-verifed_users = [533582968371806211, 348406262792323072]
-privilaged_users = [322015089529978880]
+verifed_users = [533582968371806211, 348406262792323072, 324915166762237953]
 
 uganda = 525442477365133323
 
@@ -32,14 +33,15 @@ author_msg_times = {}
 
 logger = Logger(os.environ.get('DROPBOX_TOKEN', 0))
 
+privilaged_users = [322015089529978880]
 async def is_owner(ctx):
     return ctx.author.id in privilaged_users
 
+from wordlist import bannedWords
 async def profanityLevel(msg):
-
     msgsplit = msg.split()    
     for c in msgsplit:
-        if c == "neger" or c == "negrar" or c == "n3g3r" or c == "n3ger" or c == "neg3r":
+        if c in bannedWords:
             return 1.0
     else:
         # Use AI to detect profanity level. if over a % return False.
@@ -106,7 +108,7 @@ async def on_ready():
 @client.event
 async def on_member_join(joined_member):
     if joined_member.id in verifed_users and joined_member.guild.id == uganda:
-        knuckle = discord.utils.get(joined_member.guild.roles, id=525444324561780737)
+        knuckle = discord.utils.get(joined_member.guild.roles, id=666354334136795164)
         await joined_member.edit(roles=[knuckle])
         print("ADDED ROLE TO ", joined_member)
 
@@ -180,12 +182,51 @@ async def purge(ctx, amount: int, members: commands.Greedy[discord.Member] = Non
 
     await ctx.channel.delete_messages(messages)    
 
+@client.command()
+async def youtube(ctx, url: str, fileType: str):
+    await ctx.message.delete()
+    
+    try:
+        path = await ytDownload(url, fileType)
+        await ctx.send(f"Here you go {ctx.author.mention}!", file=discord.File(path))
+    except Exception as err:
+        # await ctx.send(err)
+        await ctx.send("Cannot do this atm.. Maybe the video to large or long D: Maybe brok :(")
+
+@client.command()
+async def shutdown(ctx, toggle: typing.Optional[int]):
+    await ctx.message.delete()
+    
+    if toggle == 1:
+        amount = 21600
+    elif toggle == 0:
+        amount = 0
+    else:
+        amount = 21600
+
+    await ctx.channel.edit(slowmode_delay = amount)
+
+
+@client.command()
+async def testCount(ctx, amount: int):
+    for n in range(1, amount - 1):
+        await ctx.send(str(n))
+        time.sleep(1)
+
 # @client.command()
 # async def remember(ctx, content):
 #     logger.title = "test_log"
 #     logger.log(content)
 #     await ctx.send(f"I'll remember: {content}")
 
+@client.event 
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    elif isinstance(error, commands.MissingPermissions):
+        ctx.author.send("You dont have permission(s) to run this command")
+    else:
+        raise error
         
 DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN', 0)
 

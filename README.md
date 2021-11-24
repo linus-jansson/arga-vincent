@@ -25,6 +25,7 @@ DROPBOX_TOKEN=
     - [ ] Kick or bań user if they made multiple warnings
     - [x] Delete message
     - [x] Contact BINUS
+    - [ ] Check if message is base64 encoded
 - [ ] Ban
 - [ ] Kick
 - [ ] Shutdown
@@ -34,6 +35,8 @@ DROPBOX_TOKEN=
     - [x] Remove messages?
 - [ ] Verified users
     - [ ] Website verification
-    - [ ] Give role on join
-    - [ ] Role to sharky.. hehe?
+    - [x] Give role on join
+    - [x] Role to sharky.. hehe?
 - [ ] ~~Stock market checker~~
+- [ ] Youtube Downloader using pytube
+    - [ ] Check if the file is larger than 8MB
