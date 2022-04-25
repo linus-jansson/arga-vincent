@@ -183,7 +183,7 @@ async def purge(ctx, amount: int, members: commands.Greedy[discord.Member] = Non
     await ctx.channel.delete_messages(messages)    
 
 @client.command()
-async def youtube(ctx, url: str, fileType: str):
+async def youtube(ctx, url: str, fileType: typing.Optional[str]):
     await ctx.message.delete()
     
     try:
@@ -194,6 +194,8 @@ async def youtube(ctx, url: str, fileType: str):
             
         await ctx.send(f"Here you go {ctx.author.mention}!", file=discord.File(path))
     except Exception as err:
+        await ctx.send("brok :(")
+        raise err
         # await ctx.send(err)
         logger.title = "youtube_download_exception"
         logger.log(err)
@@ -205,12 +207,15 @@ async def shutdown(ctx, toggle: typing.Optional[int]):
     
     if toggle == 1:
         amount = 21600
+        await ctx.send("😈")
     elif toggle == 0:
         amount = 0
     else:
         amount = 21600
+        await ctx.send("😈")
 
     await ctx.channel.edit(slowmode_delay = amount)
+    
 
 
 @client.command()

@@ -5,9 +5,12 @@ from time import localtime, strftime
 import datetime
 
 class Logger():
-    def __init__(self, dropbox_key):
+    def __init__(self, dropbox_key=None):
         self.title = 'log'
-        self.dbx = dropbox.Dropbox(dropbox_key)
+        if dropbox_key:
+            self.dbx = dropbox.Dropbox(dropbox_key)
+        else:
+            self.dbx = None
         
         # Backup logger
         logging.basicConfig(filename="backup-logger.log",
